@@ -21,6 +21,8 @@ interface MatrixSortableItemProps {
   element: TSurveyMatrixElement;
   elementIdx: number;
   updateMatrixLabel: (index: number, type: "row" | "column", matrixLabel: TI18nString) => void;
+  updateMatrixDescription?: (index: number, description: TI18nString) => void;
+  showDescription?: boolean;
   onDelete: (index: number) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
   canDelete: boolean;
@@ -36,6 +38,8 @@ export const MatrixSortableItem = ({
   localSurvey,
   elementIdx,
   updateMatrixLabel,
+  updateMatrixDescription,
+  showDescription = false,
   onDelete,
   onKeyDown,
   canDelete,
@@ -55,40 +59,53 @@ export const MatrixSortableItem = ({
   };
 
   return (
-    <div className="flex w-full items-center gap-2" ref={setNodeRef} style={style}>
-      <div {...listeners} {...attributes}>
-        <GripVerticalIcon className="h-4 w-4 cursor-move text-slate-400" />
+    <div className="flex w-full flex-col gap-1" ref={setNodeRef} style={style}>
+      <div className="flex w-full items-center gap-2">
+        <div {...listeners} {...attributes}>
+          <GripVerticalIcon className="h-4 w-4 cursor-move text-slate-400" />
+        </div>
+        <div className="flex w-full items-center">
+          <ElementFormInput
+            key={choice.id}
+            id={`${type}-${index}`}
+            label=""
+            localSurvey={localSurvey}
+            elementIdx={elementIdx}
+            value={choice.label}
+            updateMatrixLabel={updateMatrixLabel}
+            isInvalid={isInvalid}
+            locale={locale}
+            onKeyDown={onKeyDown}
+            isStorageConfigured={isStorageConfigured}
+          />
+          {canDelete && (
+            <TooltipRenderer data-testid="tooltip-renderer" tooltipContent={t("common.delete")}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="ml-2"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onDelete(index);
+                }}>
+                <TrashIcon />
+              </Button>
+            </TooltipRenderer>
+          )}
+        </div>
       </div>
-
-      <div className="flex w-full items-center">
-        <ElementFormInput
-          key={choice.id}
-          id={`${type}-${index}`}
-          label=""
-          localSurvey={localSurvey}
-          elementIdx={elementIdx}
-          value={choice.label}
-          updateMatrixLabel={updateMatrixLabel}
-          isInvalid={isInvalid}
-          locale={locale}
-          onKeyDown={onKeyDown}
-          isStorageConfigured={isStorageConfigured}
-        />
-        {canDelete && (
-          <TooltipRenderer data-testid="tooltip-renderer" tooltipContent={t("common.delete")}>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="ml-2"
-              onClick={(e) => {
-                e.preventDefault();
-                onDelete(index);
-              }}>
-              <TrashIcon />
-            </Button>
-          </TooltipRenderer>
-        )}
-      </div>
+      {showDescription && type === "row" && updateMatrixDescription && (
+        <div className="ml-6">
+          <input
+            type="text"
+            id={`row-desc-${index}`}
+            className="w-full rounded-md border border-slate-200 px-3 py-1.5 text-sm text-slate-600 placeholder-slate-400 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400"
+            placeholder="Row description (optional)"
+            value={(choice.description as { default?: string } | undefined)?.default ?? ""}
+            onChange={(e) => updateMatrixDescription(index, { default: e.target.value })}
+          />
+        </div>
+      )}
     </div>
   );
 };

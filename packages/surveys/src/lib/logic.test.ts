@@ -119,6 +119,8 @@ describe("Survey Logic", () => {
               { id: "col2", label: { default: "Column 2", es: "Columna 2" } },
             ],
             shuffleOption: "none",
+            displayMode: "table",
+            hasRemarks: false,
           },
         ],
       },

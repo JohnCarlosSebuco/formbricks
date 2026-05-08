@@ -31,6 +31,7 @@ export function MatrixElement({
   dir = "auto",
 }: Readonly<MatrixElementProps>) {
   const [startTime, setStartTime] = useState(performance.now());
+  const [remarks, setRemarks] = useState<Record<string, string>>({});
   const isCurrent = element.id === currentElementId;
   const isRequired = element.required;
   const { t } = useTranslation();
@@ -57,15 +58,14 @@ export function MatrixElement({
     });
   }, [element.shuffleOption, element.rows, rowShuffleIdx]);
 
-  // Convert rows to MatrixOption format
   const rows: MatrixOption[] = useMemo(() => {
     return elementRows.map((row, index) => ({
       id: `row-${index}`,
       label: getLocalizedValue(row.label, languageCode),
+      description: row.description ? getLocalizedValue(row.description, languageCode) : undefined,
     }));
   }, [elementRows, languageCode]);
 
-  // Convert columns to MatrixOption format
   const columns: MatrixOption[] = useMemo(() => {
     return element.columns.map((column, index) => ({
       id: `col-${index}`,
@@ -122,9 +122,16 @@ export function MatrixElement({
     }
   };
 
+  const handleRemarkChange = (rowId: string, text: string) => {
+    setRemarks((prev) => ({ ...prev, [rowId]: text }));
+    const rowLabel = rows.find((r) => r.id === rowId)?.label ?? rowId;
+    if (text.trim()) {
+      onChange({ [`${element.id}_remark_${rowLabel}`]: text });
+    }
+  };
+
   const handleSubmit = (e: Event) => {
     e.preventDefault();
-    // Update TTC when form is submitted (for TTC collection)
     const updatedTtc = getUpdatedTtc(ttc, element.id, performance.now() - startTime);
     setTtc(updatedTtc);
   };
@@ -146,6 +153,10 @@ export function MatrixElement({
         errorMessage={errorMessage}
         imageUrl={element.imageUrl}
         videoUrl={element.videoUrl}
+        displayMode={element.displayMode ?? "table"}
+        hasRemarks={element.hasRemarks ?? false}
+        remarks={remarks}
+        onRemarkChange={handleRemarkChange}
       />
     </form>
   );

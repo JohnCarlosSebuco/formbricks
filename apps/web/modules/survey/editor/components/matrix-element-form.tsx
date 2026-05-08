@@ -120,6 +120,12 @@ export const MatrixElementForm = ({
     }
   };
 
+  const updateMatrixDescription = (index: number, description: TI18nString) => {
+    const updatedRows = [...element.rows];
+    updatedRows[index] = { ...updatedRows[index], description };
+    updateElement(elementIdx, { rows: updatedRows });
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent, type: "row" | "column", currentIndex: number) => {
     const items = type === "row" ? element.rows : element.columns;
 
@@ -266,6 +272,8 @@ export const MatrixElementForm = ({
                       element={element}
                       elementIdx={elementIdx}
                       updateMatrixLabel={updateMatrixLabel}
+                      updateMatrixDescription={updateMatrixDescription}
+                      showDescription={(element.displayMode ?? "table") === "card"}
                       onDelete={(index) => handleDeleteLabel("row", index)}
                       onKeyDown={(e) => handleKeyDown(e, "row", index)}
                       canDelete={element.rows.length > 2}
@@ -345,6 +353,35 @@ export const MatrixElementForm = ({
             />
           </div>
         </div>
+      </div>
+      <div className="mt-4 flex flex-wrap items-center gap-6">
+        <div className="flex flex-col gap-1">
+          <Label htmlFor={`displayMode-${elementIdx}`}>Display Mode</Label>
+          <select
+            id={`displayMode-${elementIdx}`}
+            value={element.displayMode ?? "table"}
+            onChange={(e) =>
+              updateElement(elementIdx, {
+                displayMode: e.target.value as "table" | "card",
+              })
+            }
+            className="mt-1 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-700 focus:border-blue-400 focus:outline-none">
+            <option value="table">Table</option>
+            <option value="card">Card</option>
+          </select>
+        </div>
+        {(element.displayMode ?? "table") === "card" && (
+          <div className="flex items-center gap-2 pt-5">
+            <input
+              type="checkbox"
+              id={`hasRemarks-${elementIdx}`}
+              checked={element.hasRemarks ?? false}
+              onChange={(e) => updateElement(elementIdx, { hasRemarks: e.target.checked })}
+              className="h-4 w-4 rounded border-slate-300 text-blue-600"
+            />
+            <Label htmlFor={`hasRemarks-${elementIdx}`}>Enable Remarks</Label>
+          </div>
+        )}
       </div>
       <ValidationRulesEditor
         elementType={element.type}

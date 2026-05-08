@@ -670,6 +670,8 @@ describe("validators", () => {
       headline: { default: "Matrix question" },
       required: false,
       shuffleOption: "none",
+      displayMode: "table",
+      hasRemarks: false,
       rows: [
         { id: "row1", label: { default: "Row 1" } },
         { id: "row2", label: { default: "Row 2" } },
