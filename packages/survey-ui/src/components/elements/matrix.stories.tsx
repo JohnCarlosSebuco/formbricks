@@ -269,6 +269,71 @@ export const RTLWithSelections: Story = {
   },
 };
 
+const performanceRows: MatrixOption[] = [
+  {
+    id: "row-0",
+    label: "Drive and Enthusiasm",
+    description: "We take responsibility for getting our jobs well done.",
+  },
+  {
+    id: "row-1",
+    label: "Leadership",
+    description: "We always consider the wider good - we're here to make things better.",
+  },
+  { id: "row-2", label: "Integrity", description: "We do the right thing even when no one is looking." },
+  { id: "row-3", label: "Teamwork", description: "We work as a team guided by family values." },
+  {
+    id: "row-4",
+    label: "Entrepreneurship",
+    description: "We find the places there's a problem to be solved and seize the opportunity.",
+  },
+];
+
+const ratingColumns: MatrixOption[] = [
+  { id: "col-0", label: "NI" },
+  { id: "col-1", label: "ME" },
+  { id: "col-2", label: "EE" },
+];
+
+export const CardLayout: Story = {
+  args: {
+    elementId: "matrix-card",
+    inputId: "matrix-card-input",
+    headline: "Performance Criteria",
+    rows: performanceRows,
+    columns: ratingColumns,
+    displayMode: "card",
+  },
+};
+
+export const CardLayoutWithRemarks: Story = {
+  args: {
+    elementId: "matrix-card-remarks",
+    inputId: "matrix-card-remarks-input",
+    headline: "Performance Criteria",
+    rows: performanceRows,
+    columns: ratingColumns,
+    displayMode: "card",
+    hasRemarks: true,
+  },
+};
+
+export const CardLayoutWithSelections: Story = {
+  args: {
+    elementId: "matrix-card-selections",
+    inputId: "matrix-card-selections-input",
+    headline: "Performance Criteria",
+    rows: performanceRows,
+    columns: ratingColumns,
+    displayMode: "card",
+    hasRemarks: true,
+    value: {
+      "row-0": "col-1",
+      "row-2": "col-2",
+    },
+  },
+};
+
 export const MultipleElements: Story = {
   render: () => (
     <div className="w-[600px] space-y-8">
