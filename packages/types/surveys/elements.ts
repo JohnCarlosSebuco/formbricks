@@ -306,8 +306,8 @@ export const ZSurveyMatrixElement = ZSurveyElementBase.extend({
   columns: z.array(ZSurveyMatrixElementChoice),
   shuffleOption: ZShuffleOption.optional().prefault("none"),
   validation: ZValidation.optional(),
-  displayMode: z.enum(["table", "card"]).optional().default("table"),
-  hasRemarks: z.boolean().optional().default(false),
+  displayMode: z.enum(["table", "card"]).optional().prefault("table"),
+  hasRemarks: z.boolean().optional().prefault(false),
 });
 
 export type TSurveyMatrixElement = z.infer<typeof ZSurveyMatrixElement>;
