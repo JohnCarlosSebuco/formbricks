@@ -295,6 +295,7 @@ export type TSurveyCalElement = z.infer<typeof ZSurveyCalElement>;
 export const ZSurveyMatrixElementChoice = z.object({
   id: z.string(),
   label: ZI18nString,
+  description: ZI18nString.optional(),
 });
 
 export type TSurveyMatrixElementChoice = z.infer<typeof ZSurveyMatrixElementChoice>;
@@ -305,6 +306,8 @@ export const ZSurveyMatrixElement = ZSurveyElementBase.extend({
   columns: z.array(ZSurveyMatrixElementChoice),
   shuffleOption: ZShuffleOption.optional().prefault("none"),
   validation: ZValidation.optional(),
+  displayMode: z.enum(["table", "card"]).optional().default("table"),
+  hasRemarks: z.boolean().optional().default(false),
 });
 
 export type TSurveyMatrixElement = z.infer<typeof ZSurveyMatrixElement>;
