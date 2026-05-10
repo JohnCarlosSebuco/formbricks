@@ -74,10 +74,12 @@ export function MatrixElement({
   }, [element.columns, languageCode]);
 
   // Convert value from row label -> column label mapping to row id -> column id mapping
+  // Skips _remark keys which are stored alongside ratings in the same value object
   const convertValueToIds = (valueObj: Record<string, string>): Record<string, string> => {
     const result: Record<string, string> = {};
 
     Object.entries(valueObj).forEach(([rowLabel, columnLabel]) => {
+      if (rowLabel.endsWith("_remark")) return;
       if (columnLabel) {
         // Find the row ID that corresponds to this row label
         const rowId = rows.find((row) => row.label === rowLabel)?.id;
@@ -113,21 +115,22 @@ export function MatrixElement({
 
   const handleChange = (newValue: Record<string, string>) => {
     const labelValue = convertValueFromIds(newValue);
-
-    // Check if all values are empty and if so, make it an empty object
-    if (Object.values(labelValue).every((val) => val === "")) {
-      onChange({ [element.id]: {} });
-    } else {
-      onChange({ [element.id]: labelValue });
-    }
+    // Preserve existing remark keys when ratings change
+    const existingRemarks = Object.fromEntries(Object.entries(value).filter(([k]) => k.endsWith("_remark")));
+    onChange({ [element.id]: { ...existingRemarks, ...labelValue } });
   };
 
   const handleRemarkChange = (rowId: string, text: string) => {
     setRemarks((prev) => ({ ...prev, [rowId]: text }));
     const rowLabel = rows.find((r) => r.id === rowId)?.label ?? rowId;
+    const remarkKey = `${rowLabel}_remark`;
+    const updatedValue = { ...value };
     if (text.trim()) {
-      onChange({ [`${element.id}_remark_${rowLabel}`]: text });
+      updatedValue[remarkKey] = text;
+    } else {
+      delete updatedValue[remarkKey];
     }
+    onChange({ [element.id]: updatedValue });
   };
 
   const handleSubmit = (e: Event) => {
