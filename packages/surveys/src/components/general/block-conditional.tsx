@@ -108,6 +108,12 @@ export function BlockConditional({
       if (elementValue !== undefined) {
         acc[element.id] = elementValue;
       }
+      const remarkPrefix = `${element.id}_remark_`;
+      Object.keys(mergedValue).forEach((key) => {
+        if (key.startsWith(remarkPrefix) && mergedValue[key] !== undefined) {
+          acc[key] = mergedValue[key];
+        }
+      });
       return acc;
     }, {});
 
@@ -303,6 +309,12 @@ export function BlockConditional({
       if (value[element.id] !== undefined) {
         blockResponses[element.id] = value[element.id];
       }
+      const remarkPrefix = `${element.id}_remark_`;
+      Object.keys(value).forEach((key) => {
+        if (key.startsWith(remarkPrefix) && value[key] !== undefined) {
+          blockResponses[key] = value[key];
+        }
+      });
     });
     return blockResponses;
   };
