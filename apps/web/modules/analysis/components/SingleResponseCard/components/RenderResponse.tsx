@@ -97,10 +97,22 @@ export const RenderResponse: React.FC<RenderResponseProps> = ({
               const languagCode = getLanguageCode(survey.languages, language);
               const rowValueInSelectedLanguage = getLocalizedValue(row.label, languagCode);
               if (!responseData[rowValueInSelectedLanguage]) return null;
+              const remarkKey = `${rowValueInSelectedLanguage}_remark`;
+              const remark = responseData[remarkKey];
               return (
-                <p key={rowValueInSelectedLanguage} className="ph-no-capture my-1 font-normal text-slate-700">
-                  {rowValueInSelectedLanguage}:{processResponseData(responseData[rowValueInSelectedLanguage])}
-                </p>
+                <>
+                  <p
+                    key={rowValueInSelectedLanguage}
+                    className="ph-no-capture my-1 font-normal text-slate-700">
+                    {rowValueInSelectedLanguage}:
+                    {processResponseData(responseData[rowValueInSelectedLanguage])}
+                  </p>
+                  {remark && typeof remark === "string" && (
+                    <p key={remarkKey} className="ph-no-capture my-0.5 ml-3 text-sm italic text-slate-500">
+                      ↳ {remark}
+                    </p>
+                  )}
+                </>
               );
             })}
           </>

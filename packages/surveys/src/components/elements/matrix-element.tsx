@@ -130,6 +130,18 @@ export function MatrixElement({
     } else {
       delete updatedValue[remarkKey];
     }
+    console.log(
+      "[REMARK DEBUG] rowId:",
+      rowId,
+      "rowLabel:",
+      rowLabel,
+      "text:",
+      text,
+      "updatedValue:",
+      updatedValue,
+      "calling onChange with:",
+      { [element.id]: updatedValue }
+    );
     onChange({ [element.id]: updatedValue });
   };
 
